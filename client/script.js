@@ -1,6 +1,13 @@
 // remember to wrap in ()=>{}
 const socket = io();
 
+socket.on("current-users", function ({ currentUsers, socketId }) {
+  let currentUsersCount = document.querySelector(".online-users-count");
+  currentUsersCount.innerHTML = `online: <div class="spring">${currentUsers}</div>`;
+  console.log("currentUsers ", currentUsers);
+  console.log("socketId ", socketId);
+});
+
 const movingDiv = document.getElementById("hand");
 
 const mousemoveHandler = function (event) {

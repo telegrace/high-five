@@ -16,10 +16,14 @@ const staticDirPath = path.join(__dirname, "client");
 // fs stream would not include the style.css
 app.use(serve(staticDirPath));
 
+let currentUsers = 0;
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  let socketId = socket.id;
+  currentUsers++;
+  io.emit("current-users", { currentUsers, socketId });
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    currentUsers--;
+    io.emit("current-users", { currentUsers, socketId });
   });
 });
 
