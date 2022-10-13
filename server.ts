@@ -11,19 +11,13 @@ const router = new Router();
 const server = http.createServer(app.callback()); //?
 const io = new Server(server);
 
-// const hellowWorldlController: Middleware = async (ctx) => {
-//   console.log("Received a request");
-//   ctx.body = {
-//     message: "Hellow world!",
-//   };
-// };
-
-// router.get("/", hellowWorldlController);
-
-router.get("/", (ctx, next) => {
+const landingPageController: Middleware = async (ctx, next) => {
+  console.log("Received a request");
   ctx.type = "html";
   ctx.body = fs.createReadStream("public/index.html");
-});
+};
+
+router.get("/", landingPageController);
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
