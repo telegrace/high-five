@@ -1,32 +1,27 @@
-import Koa from "koa";
+const Koa = require("koa");
+const http = require("http");
 import path from "path";
-import serve from "koa-static";
-
-import http from "http";
-import { Server } from "socket.io";
-
+const serve = require("koa-static");
+const { Server } = require("socket.io");
+import { Socket } from "socket.io";
 const PORT = process.env.PORT || 3000;
 const app = new Koa();
 
-const server = http.createServer(app.callback()); //?
+const server = http.createServer(app.callback());
 const io = new Server(server);
 
 const staticDirPath = path.join(__dirname, "client");
-
-// fs stream would not include the style.css
 app.use(serve(staticDirPath));
 
 let currentUsers = 0;
-io.on("connection", (socket) => {
-  let socketId = socket.id;
+
+io.on("connection", (socket: Socket) => {
   currentUsers++;
-  io.emit("current-users", { currentUsers, socketId });
+  io.emit("current-users", currentUsers);
   socket.on("disconnect", () => {
     currentUsers--;
-    io.emit("current-users", { currentUsers, socketId });
+    io.emit("current-users", currentUsers);
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT} 🥳`);
-});
+server.listen(PORT);
