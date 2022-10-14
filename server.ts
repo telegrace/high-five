@@ -17,10 +17,11 @@ let currentUsers = 0;
 
 io.on("connection", (socket: Socket) => {
   currentUsers++;
-  io.emit("current-users", currentUsers);
+  let socketId = socket.id;
+  io.emit("current-users", { currentUsers, socketId });
   socket.on("disconnect", () => {
     currentUsers--;
-    io.emit("current-users", currentUsers);
+    io.emit("current-users", { currentUsers, socketId });
   });
 });
 

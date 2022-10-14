@@ -23,3 +23,7 @@ body {
   width: 110px;
   height: 110px;
 }
+
+#playground {
+  height: 100%;
+}

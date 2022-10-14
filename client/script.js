@@ -1,42 +1,37 @@
+import { createHand, removeAllChildren } from "./controlNodes.js";
+
 // remember to wrap in ()=>{}
 const socket = io();
 const playground = document.getElementById("playground");
 
-socket.on("current-users", function (currentUsers) {
-  let onlineUsersCount = document.querySelector(".online-users-count");
-  onlineUsersCount.innerHTML = `online: ${currentUsers}`;
-  removeAllChildren(playground);
-  for (let i = 0; i < currentUsers; i++) {
-    createHand();
-  }
-});
+socketListenerCurrentUsers();
 
-function removeAllChildren(parent) {
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
+function socketListenerCurrentUsers() {
+  socket.on("current-users", function ({ currentUsers, socketId }) {
+    let onlineUsersCount = document.querySelector(".online-users-count");
+    onlineUsersCount.innerHTML = `online: ${currentUsers}`;
+
+    removeAllChildren(playground);
+
+    for (let i = 0; i < currentUsers; i++) {
+      createHand(socketId);
+    }
+
+    const userHand = document.getElementById(socketId);
+
+    playground.addEventListener("mousemove", function (event) {
+      let x = event.clientX;
+      let y = event.clientY;
+
+      let width = userHand.offsetWidth;
+      let height = userHand.offsetHeight;
+
+      userHand.style.left = x - width / 2 + "px";
+      userHand.style.top = y - height / 2 + "px";
+    });
+  });
 }
 
-function createHand() {
-  let item = document.createElement("p");
-  item.textContent = "✋";
-  // item.style.left = Math.random() * 100 + "%";
-  playground.appendChild(item);
-}
-// const movingDiv = document.getElementById("hand");
-
-const mousemoveHandler = function (event) {
-  let x = event.clientX;
-  let y = event.clientY;
-
-  let width = movingDiv.offsetWidth;
-  let height = movingDiv.offsetHeight;
-
-  movingDiv.style.left = x - width / 2 + "px";
-  movingDiv.style.top = y - height / 2 + "px";
-};
-
-document.addEventListener("mousemove", mousemoveHandler);
 document.addEventListener("click", function () {
   document.body.style.backgroundColor = "red";
   setTimeout(() => {
