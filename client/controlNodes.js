@@ -11,3 +11,10 @@ export function createHand(socketId) {
   hand.textContent = "✋";
   playground.appendChild(hand);
 }
+
+export function otherHand(userHandLeft, userHandTop, socketId) {
+  let otherHand = document.getElementById(socketId);
+  otherHand.style.left = userHandLeft;
+  otherHand.style.top = userHandTop;
+  console.log("otherHand", otherHand);
+}

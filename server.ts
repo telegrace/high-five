@@ -24,11 +24,12 @@ let currentSockets: Array<User | null> = [];
 
 io.on("connection", (socket: Socket) => {
   currentUsers++;
+  const socketId = socket.id;
   const generatedUserID = uuidv4();
-  let newUser = { userId: generatedUserID, socketId: socket.id };
+  let newUser = { userId: generatedUserID, socketId };
   currentSockets.push(newUser);
 
-  io.emit("current-users", { currentUsers, currentSockets });
+  io.emit("current-users", { currentUsers, socketId });
   console.log("current-users", currentSockets);
 
   socket.on("disconnect", () => {
@@ -44,12 +45,16 @@ io.on("connection", (socket: Socket) => {
 
     console.log("current-users", currentSockets);
 
-    io.emit("current-users", { currentUsers, currentSockets });
+    io.emit("current-users", { currentUsers, socketId });
   });
 
   socket.on("hand-move", function ({ userHandLeft, userHandTop, socketId }) {
-    console.log("socketId ", socketId);
-    socket.broadcast.emit("hand-move", { userHandLeft, userHandTop, socketId });
+    // console.log("socketId ", userHandLeft, userHandTop, socketId);
+    socket.broadcast.emit("other-user-hand-move", {
+      userHandLeft,
+      userHandTop,
+      socketId,
+    });
   });
 });
 
