@@ -2,22 +2,28 @@ import { createHand, otherHand, removeAllChildren } from "./controlNodes.js";
 
 const socket = io();
 const playground = document.getElementById("playground");
+const onlineUsersCount = document.querySelector(".online-users-count");
+const currentUserId = document.querySelector(".current-user-id");
 
-let currentSockets = [];
+let socketMap = new Map();
 
 socketListenerCurrentUsers();
 
 function socketListenerCurrentUsers() {
-  socket.on("current-users", function ({ currentUsers, socketId }) {
-    currentSockets.push(socketId);
-    console.log("current sockets ", currentSockets);
-    let onlineUsersCount = document.querySelector(".online-users-count");
-    onlineUsersCount.innerHTML = `online: ${currentUsers}`;
-
+  socket.on("new-user", function ({ userCount, newUser }) {
     removeAllChildren(playground);
 
-    for (let i = 0; i < currentSockets.length; i++) {
-      createHand(currentSockets[i]); //id is the same
+    const { socketId, userId } = newUser;
+
+    socketMap.set(socketId, userId);
+    // console.log("count", userCount);
+    console.log("mapcount", socketMap.size);
+
+    onlineUsersCount.innerHTML = `online: ${userCount}`;
+    currentUserId.innerHTML = `Current User ID: ${socketId}`;
+
+    for (const key of socketMap.keys()) {
+      createHand(key);
     }
 
     const userHand = document.getElementById(socketId);
@@ -44,6 +50,18 @@ socket.on(
     otherHand(userHandLeft, userHandTop, socketId);
   }
 );
+
+socket.on("user-disconnected", function ({ userCount, socketId }) {
+  socketMap.delete(socketId);
+  onlineUsersCount.innerHTML = `online: ${userCount}`;
+});
+
+socket.on("get-all-connections", function ({ socketMapObj }) {
+  console.log(socketMapObj);
+  const entries = Object.entries(socketMapObj);
+  socketMap = new Map(entries);
+  console.log("only the new connection should see this", socketMapObj);
+});
 
 document.addEventListener("click", function () {
   document.body.style.backgroundColor = "red";

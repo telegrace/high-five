@@ -12,11 +12,14 @@ export function createHand(socketId) {
   playground.appendChild(hand);
 }
 
+export function removeHand(socketId) {
+  document.getElementById(socketId).remove();
+}
+
 export function otherHand(userHandLeft, userHandTop, socketId) {
   if (document.getElementById(socketId)) {
     let otherHand = document.getElementById(socketId);
     otherHand.style.left = userHandLeft;
     otherHand.style.top = userHandTop;
-    console.log("otherHand", otherHand);
   }
 }

@@ -14,38 +14,29 @@ const io = new Server(server);
 const staticDirPath = path.join(__dirname, "client");
 app.use(serve(staticDirPath));
 
-type User = {
-  userId: string;
-  socketId: string;
-};
-
-let currentUsers = 0;
-let currentSockets: Array<User | null> = [];
+let userCount = 0;
+let socketMap = new Map();
 
 io.on("connection", (socket: Socket) => {
-  currentUsers++;
+  userCount++;
+  console.log("connect");
   const socketId = socket.id;
   const generatedUserID = uuidv4();
-  let newUser = { userId: generatedUserID, socketId };
-  currentSockets.push(newUser);
+  let newUser = { socketId, userId: generatedUserID };
 
-  io.emit("current-users", { currentUsers, socketId });
-  console.log("current-users", currentSockets);
+  socketMap.set(newUser.socketId, newUser.userId);
+
+  io.emit("new-user", { userCount, newUser });
+
+  const socketMapObj = Object.fromEntries(socketMap);
+  // io.to(socketId).emit("get-all-connections", { socketMapObj });
+  socket.emit("get-all-connections", { socketMapObj });
 
   socket.on("disconnect", () => {
-    console.log("disconnect ", newUser);
-
-    currentUsers--;
-
-    for (let i = 0; i < currentSockets.length; i++) {
-      if (currentSockets[i]?.socketId === newUser.socketId) {
-        currentSockets.splice(i, 1);
-      }
-    }
-
-    console.log("current-users", currentSockets);
-
-    io.emit("current-users", { currentUsers, socketId });
+    userCount--;
+    console.log("disconnect");
+    socketMap.delete(socketId);
+    io.emit("user-disconnected", { userCount, socketId });
   });
 
   socket.on("hand-move", function ({ userHandLeft, userHandTop, socketId }) {
