@@ -13,8 +13,10 @@ export function createHand(socketId) {
 }
 
 export function otherHand(userHandLeft, userHandTop, socketId) {
-  let otherHand = document.getElementById(socketId);
-  otherHand.style.left = userHandLeft;
-  otherHand.style.top = userHandTop;
-  console.log("otherHand", otherHand);
+  if (document.getElementById(socketId)) {
+    let otherHand = document.getElementById(socketId);
+    otherHand.style.left = userHandLeft;
+    otherHand.style.top = userHandTop;
+    console.log("otherHand", otherHand);
+  }
 }
