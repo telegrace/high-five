@@ -20,17 +20,19 @@ let socketMap = new Map();
 io.on("connection", (socket: Socket) => {
   userCount++;
   console.log("connect");
+
+  const socketMapObj = Object.fromEntries(socketMap);
+  // io.to(socketId).emit("get-all-connections", { socketMapObj });
+  socket.emit("get-all-connections", { socketMapObj });
+
   const socketId = socket.id;
   const generatedUserID = uuidv4();
   let newUser = { socketId, userId: generatedUserID };
 
   socketMap.set(newUser.socketId, newUser.userId);
 
-  io.emit("new-user", { userCount, newUser });
-
-  const socketMapObj = Object.fromEntries(socketMap);
-  // io.to(socketId).emit("get-all-connections", { socketMapObj });
-  socket.emit("get-all-connections", { socketMapObj });
+  io.emit("user-count", { userCount });
+  socket.broadcast.emit("new-user", { newUser });
 
   socket.on("disconnect", () => {
     userCount--;
@@ -39,14 +41,16 @@ io.on("connection", (socket: Socket) => {
     io.emit("user-disconnected", { userCount, socketId });
   });
 
-  socket.on("hand-move", function ({ userHandLeft, userHandTop, socketId }) {
-    // console.log("socketId ", userHandLeft, userHandTop, socketId);
-    socket.broadcast.emit("other-user-hand-move", {
-      userHandLeft,
-      userHandTop,
-      socketId,
-    });
-  });
+  socket.on(
+    "hand-move",
+    function ({ userHandLeft, userHandTop, globalUserSocketId }) {
+      socket.broadcast.emit("other-user-hand-move", {
+        userHandLeft,
+        userHandTop,
+        socketId,
+      });
+    }
+  );
 });
 
 server.listen(PORT, () => {
