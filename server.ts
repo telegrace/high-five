@@ -22,7 +22,6 @@ io.on("connection", (socket: Socket) => {
   console.log("connect");
 
   const socketMapObj = Object.fromEntries(socketMap);
-  // io.to(socketId).emit("get-all-connections", { socketMapObj });
   socket.emit("get-all-connections", { socketMapObj });
 
   const socketId = socket.id;

@@ -1,4 +1,4 @@
-import { createHand, otherHand } from "./controlNodes.js";
+import { createHand, otherHand, removeHand } from "./controlNodes.js";
 
 const socket = io();
 const playground = document.getElementById("playground");
@@ -7,7 +7,6 @@ const onlineUsersCount = document.querySelector(".online-users-count");
 let globalUserSocketId;
 
 socket.on("connect", () => {
-  console.log("Here", socket.id);
   globalUserSocketId = socket.id;
   createHand(globalUserSocketId);
   socketListenerCurrentUsers();
@@ -55,6 +54,7 @@ socket.on(
 
 socket.on("user-disconnected", function ({ userCount, socketId }) {
   socketMap.delete(socketId);
+  removeHand(socketId);
   onlineUsersCount.innerHTML = `online: ${userCount}`;
 });
 
