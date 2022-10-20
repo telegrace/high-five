@@ -43,6 +43,7 @@ io.on("connection", (socket: Socket) => {
   socket.on(
     "hand-move",
     function ({ userHandLeft, userHandTop, globalUserSocketId }) {
+      let socketId = globalUserSocketId;
       socket.broadcast.emit("other-user-hand-move", {
         userHandLeft,
         userHandTop,

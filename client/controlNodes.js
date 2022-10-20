@@ -1,9 +1,3 @@
-export function removeAllChildren(parent) {
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
-}
-
 export function createHand(socketId) {
   let hand = document.createElement("div");
   hand.className = "hand";
@@ -19,7 +13,12 @@ export function removeHand(socketId) {
 export function otherHand(userHandLeft, userHandTop, socketId) {
   if (document.getElementById(socketId)) {
     let otherHand = document.getElementById(socketId);
-    otherHand.style.left = userHandLeft;
-    otherHand.style.top = userHandTop;
+    otherHand.style.left = userHandLeft + "px";
+    otherHand.style.top = userHandTop + "px";
+    otherHand.style.display = "unset";
   }
+}
+
+export function changeBackgroundColor(color) {
+  document.body.style.backgroundColor = color;
 }
