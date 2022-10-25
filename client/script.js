@@ -98,14 +98,28 @@ function closeProximity(key, userHandLeft, userHandTop) {
   ) {
     instructions.innerHTML = `click to high five!`;
     changeBackgroundColor("pink");
-    let confetti = new Confetti(key);
-    confetti.setCount(75);
-    confetti.setSize(1);
-    confetti.setPower(25);
-    confetti.setFade(false);
-    confetti.destroyTarget(false);
+    document.body.addEventListener("click", confettiFunc);
   } else {
     instructions.innerHTML = `move closer to a hand`;
     changeBackgroundColor("white");
+    document.body.removeEventListener("click", confettiFunc);
   }
+}
+
+function toDecimal(num) {
+  let string = "0." + num.toString();
+  return parseFloat(string);
+}
+
+function confettiFunc() {
+  confetti({
+    angle: randomInRange(55, 125),
+    spread: randomInRange(50, 70),
+    particleCount: randomInRange(50, 100),
+    origin: { x: 0.5, y: 0.5 },
+  });
+}
+
+function randomInRange(min, max) {
+  return Math.random() * (max - min) + min;
 }
