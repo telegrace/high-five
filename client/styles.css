@@ -6,9 +6,12 @@
 * {
   margin: 0;
 }
+
+#playground,
 html,
 body {
   height: 100%;
+  overflow: hidden;
 }
 */ body {
   line-height: 1.5;
@@ -16,14 +19,27 @@ body {
 }
 
 .hand {
+  padding: 30px;
   font-size: 100px;
   position: absolute;
   top: 0px;
   left: 0px;
-  width: 110px;
-  height: 110px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  display: none;
 }
 
-#playground {
-  height: 100%;
+header {
+  background-color: white;
+  overflow: hidden;
+  position: absolute;
+  text-align: center;
+  z-index: 10;
+  width: 100%;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 8px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }

@@ -4,13 +4,19 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, minimum-scale=1" />
+    <meta http-equiv="Refresh" content="360" />
+    <!-- stops slowing down, but hackyfix -->
     <link rel="stylesheet" href="./styles.css" />
     <title>High Five</title>
   </head>
   <body>
-    <div class="online-users-count"></div>
+    <header>
+      <div class="online-users-count ticker-item"></div>
+      <div class="instructions ticker-item">Move closer to a hand!</div>
+    </header>
     <div id="playground"></div>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="./confetti.min.js"></script>
     <script type="module" src="./script.js"></script>
   </body>
 </html>
