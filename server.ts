@@ -57,6 +57,11 @@ io.on('connection', (socket: Socket) => {
     socket.broadcast.emit('other-hand-in-range', socketId);
   });
 
+  socket.on('hand-out-of-range', function ({ globalUserSocketId }) {
+    let socketId = globalUserSocketId;
+    socket.broadcast.emit('other-hand-out-of-range', socketId);
+  });
+
   socket.on('smacker', function ({ globalUserSocketId }) {
     let socketId = globalUserSocketId;
     socket.broadcast.emit('smackee', socketId);

@@ -68,12 +68,19 @@ socket.on('other-hand-in-range', function ({ socketId }) {
     instructions.innerHTML = `click to high five!`;
     changeBackgroundColor('pink');
   }
-  confettiFunc;
+});
+
+socket.on('other-hand-out-of-range', function ({ socketId }) {
+  if (globalUserSocketId !== socketId) {
+    instructions.innerHTML = `move closer to a hand`;
+    changeBackgroundColor('white');
+    document.body.removeEventListener('click', confettiFunc);
+  }
 });
 
 socket.on('smackee', function ({ socketId }) {
   if (globalUserSocketId !== socketId) {
-    new confettiFunc();
+    console.log('you got smacked');
   }
 });
 
@@ -121,6 +128,9 @@ function closeProximity(key, userHandLeft, userHandTop) {
       confettiFunc();
     });
   } else {
+    socket.emit('hand-out-of-range', {
+      globalUserSocketId,
+    });
     instructions.innerHTML = `move closer to a hand`;
     changeBackgroundColor('white');
     document.body.removeEventListener('click', confettiFunc);
