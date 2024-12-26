@@ -7,12 +7,33 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
-app.use(express.static("client")); // :)
+app.use(express.static("client"));
 
 app.get("/", (req, res) => {
 	res.sendFile(join(__dirname, "./client/index.html"));
 });
 
+const userMap = new Map();
+let userCount = 0;
+
+io.on("connection", (socket) => {
+	userCount++;
+
+	console.log("user-connected", socket.id);
+
+	io.emit(`user-connected`, {
+		id: socket.id,
+		userCount,
+	});
+
+	socket.on("disconnect", () => {
+		userCount--;
+
+		console.log("disconnected", socket.id);
+		io.emit("user-disconnected", { map: userMap, id: socket.id });
+	});
+});
+
 server.listen(3000, () => {
-	console.log("server running at http://localhost:3000");
+	console.log("server running at http://localhost:3000 💕✨");
 });
