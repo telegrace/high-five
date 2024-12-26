@@ -2,29 +2,59 @@ import { initConfetti } from "./confetti.js";
 
 const socket = io();
 const playground = document.getElementById("playground");
-
-console.log("get the box to follow the mouse");
-
-const currentUserHand = document.getElementById("current-user-hand");
 const otherHand = document.getElementById("other-hand");
 
-playground.addEventListener("mousemove", (e) => {
-	e.preventDefault();
-	let mouseX = e.clientX;
-	let mouseY = e.clientY;
+let currentUserId;
+let currentUserHandAppended = false;
+let currentUserHand;
 
-	let width = currentUserHand.offsetWidth;
+let userCount = 1;
 
-	let currentUserHandLeft = mouseX - width / 2;
-	let currentUserHandTop = mouseY - width / 2;
-
-	currentUserHand.style.left = currentUserHandLeft + "px";
-	currentUserHand.style.top = currentUserHandTop + "px";
+socket.on("connect", () => {
+	currentUserId = socket.id;
+	console.log("connected", currentUserId);
+	createHandElement(socket.id);
 });
+
+function checkHandAppended() {
+	if (currentUserHandAppended) {
+		currentUserHand = document.getElementById(`user-${currentUserId}`);
+
+		playground.addEventListener("mousemove", (e) => {
+			console.log("move");
+			e.preventDefault();
+			let mouseX = e.clientX;
+			let mouseY = e.clientY;
+
+			let width = currentUserHand.offsetWidth;
+
+			let currentUserHandLeft = mouseX - width / 2;
+			let currentUserHandTop = mouseY - width / 2;
+
+			currentUserHand.style.left = currentUserHandLeft + "px";
+			currentUserHand.style.top = currentUserHandTop + "px";
+		});
+		clearInterval(intervalId); // Stop checking once the hand is appended
+	}
+}
+
+const intervalId = setInterval(checkHandAppended, 100); // Check every 100ms
 
 otherHand.addEventListener("click", (e) => {
 	console.log("click");
 	initConfetti();
 });
 
-// function followMouse()
+function createHandElement(id) {
+	const hand = document.createElement("div");
+	hand.id = `user-${id}`;
+	hand.classList.add("hand");
+	hand.innerHTML = "👋";
+	hand.style.backgroundColor = `#${Math.floor(
+		Math.random() * 16777215
+	).toString(16)}`;
+	hand.style.position = "absolute";
+	hand.style.zIndex = -userCount;
+	playground.appendChild(hand);
+	currentUserHandAppended = true;
+}

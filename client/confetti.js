@@ -4,8 +4,6 @@ let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-let cx = ctx.canvas.width / 2;
-let cy = ctx.canvas.height / 2;
 
 let confetti = [];
 const confettiCount = 300;
@@ -54,8 +52,8 @@ const initConfetti = () => {
 			},
 
 			velocity: {
-				x: randomRange(-25, 25),
-				y: randomRange(0, -50),
+				x: randomRange(-15, 15),
+				y: randomRange(0, -30),
 			},
 		});
 	}
@@ -112,9 +110,4 @@ window.addEventListener("resize", function () {
 	resizeCanvas();
 });
 
-// window.addEventListener("click", function () {
-// 	initConfetti();
-// });
-
-// export the initConfetti function
 export { initConfetti };
