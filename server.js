@@ -13,7 +13,6 @@ app.get("/", (req, res) => {
 	res.sendFile(join(__dirname, "./client/index.html"));
 });
 
-const userMap = new Map();
 let userCount = 0;
 
 io.on("connection", (socket) => {
@@ -26,11 +25,16 @@ io.on("connection", (socket) => {
 		userCount,
 	});
 
+	//listen to hand-move
+	socket.on("hand-move", (data) => {
+		socket.broadcast.emit(data.userId, data);
+	});
+
 	socket.on("disconnect", () => {
 		userCount--;
 
 		console.log("disconnected", socket.id);
-		io.emit("user-disconnected", { map: userMap, id: socket.id });
+		io.emit("user-disconnected", { id: socket.id });
 	});
 });
 
