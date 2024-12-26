@@ -1,0 +1,97 @@
+/* 1. Use a more-intuitive box-sizing model */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+* {
+	margin: 0;
+}
+
+body {
+	/* 3. Add accessible line-height */
+	line-height: 1.5;
+	/* 4. Improve text rendering */
+	-webkit-font-smoothing: antialiased;
+}
+
+/* 5. Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+/* 6. Inherit fonts for form controls */
+input,
+button,
+textarea,
+select {
+	font: inherit;
+}
+
+/* 7. Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+
+/* 8. Improve line wrapping */
+p {
+	text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	text-wrap: balance;
+}
+
+/*
+  9. Create a root stacking context
+*/
+#root,
+#__next {
+	isolation: isolate;
+}
+
+#info {
+	border: solid 1px black;
+}
+
+#playground {
+	display: flex;
+	/* justify-content: center; */
+	/* align-items: center; */
+	height: 100vh;
+	width: 100vw;
+	border: solid 1px black;
+}
+
+.hand {
+	width: 100px;
+	height: 100px;
+	font-size: 5em;
+}
+
+#other-hand {
+	position: absolute;
+	right: 50vw;
+	top: 50vh;
+}
+
+#current-user-hand {
+	position: absolute;
+}

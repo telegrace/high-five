@@ -1,0 +1,10 @@
+{
+	"name": "high-five",
+	"version": "0.0.1",
+	"description": "when you're alone and wanna high five somebody",
+	"type": "commonjs",
+	"dependencies": {
+		"express": "^4.21.2",
+		"socket.io": "^4.8.1"
+	}
+}
