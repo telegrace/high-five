@@ -12,22 +12,33 @@ let count = 1;
 const userMap = new Map();
 
 socket.on("connect", () => {
+	socket.emit("get-user-list");
 	currentUserId = socket.id;
-	console.log("connected", currentUserId);
 	createHandElement(currentUserId);
+
+	socket.on("user-list", (userList) => {
+		userList.forEach((user) => {
+			if (user !== currentUserId) {
+				userMap.set(user, { x: 0, y: 0, appended: false });
+				createHandElement(user);
+			}
+		});
+	});
 });
 
-socket.on("user-connected", ({ id, userCount }) => {
+socket.on("user-connected", ({ id, userCount, userList }) => {
 	count = userCount;
 	userCountElement.innerHTML = `online users: ${count}`;
-	// add the id to userMap
 	if (currentUserId !== id) {
 		userMap.set(id, { x: 0, y: 0, appended: false });
 		createHandElement(id);
 	}
 });
 
-// listen for each id and their movement
+socket.on("user-disconnected", ({ id }) => {
+	userCountElement.innerHTML = `online users: ${count}`;
+	document.getElementById(`user-${id}`).remove();
+});
 
 function checkHandAppended() {
 	if (userMap.get(currentUserId).appended) {
@@ -58,9 +69,11 @@ function checkPlayerAdded() {
 		clearInterval(checkPlayers);
 	}
 }
+
 otherHand.addEventListener("click", (e) => {
 	initConfetti();
 });
+
 const checkHand = setInterval(() => {
 	checkHandAppended();
 }, 100); // Check every 100ms
@@ -72,7 +85,6 @@ const checkPlayers = setInterval(() => {
 const checkHands = setInterval(() => {
 	userMap.forEach((value, key) => {
 		if (value.appended) {
-			// listen to the value
 			socket.on(key, (data) => {
 				const hand = document.getElementById(`user-${key}`);
 				hand.style.left = data.x + "px";
