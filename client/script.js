@@ -35,6 +35,10 @@ socket.on("user-connected", ({ id, userCount, userList }) => {
 	}
 });
 
+socket.on("high-five", () => {
+	initConfetti();
+});
+
 socket.on("user-disconnected", ({ id }) => {
 	userCountElement.innerHTML = `online users: ${count}`;
 	document.getElementById(`user-${id}`).remove();
@@ -99,12 +103,17 @@ function createHandElement(id) {
 	hand.id = `user-${id}`;
 	hand.classList.add("hand");
 	hand.innerHTML = "👋";
-	hand.style.backgroundColor = `#${Math.floor(
-		Math.random() * 16777215
-	).toString(16)}`;
+
 	hand.style.position = "absolute";
-	hand.style.zIndex = -count;
+	hand.style.zIndex = count;
 	playground.appendChild(hand);
+	if (id !== currentUserId) {
+		hand.addEventListener("click", (e) => {
+			socket.emit("high-five");
+			initConfetti();
+		});
+	}
+
 	const user = userMap.get(id);
 	userMap.set(id, { ...user, appended: true });
 }

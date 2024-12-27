@@ -21,6 +21,7 @@ io.on("connection", (socket) => {
 	userList.push(socket.id);
 
 	console.log("user-connected", socket.id);
+
 	socket.on("get-user-list", () => {
 		socket.emit("user-list", userList);
 	});
@@ -32,6 +33,10 @@ io.on("connection", (socket) => {
 
 	socket.on("hand-move", (data) => {
 		socket.broadcast.emit(data.userId, data);
+	});
+
+	socket.on("high-five", () => {
+		socket.broadcast.emit("high-five");
 	});
 
 	socket.on("disconnect", () => {
