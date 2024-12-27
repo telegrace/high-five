@@ -39,9 +39,12 @@ socket.on("high-five", () => {
 	initConfetti();
 });
 
-socket.on("user-disconnected", ({ id }) => {
+socket.on("user-disconnected", ({ id, userCount }) => {
+	count = userCount;
 	userCountElement.innerHTML = `online users: ${count}`;
 	document.getElementById(`user-${id}`).remove();
+	userMap.delete(id);
+	otherHand.style.visibility = "visible";
 });
 
 function checkHandAppended() {
@@ -105,13 +108,15 @@ function createHandElement(id) {
 	hand.innerHTML = "👋";
 
 	hand.style.position = "absolute";
-	hand.style.zIndex = count;
 	playground.appendChild(hand);
+	hand.style.zIndex = -count;
+
 	if (id !== currentUserId) {
 		hand.addEventListener("click", (e) => {
 			socket.emit("high-five");
 			initConfetti();
 		});
+		hand.style.zIndex = count;
 	}
 
 	const user = userMap.get(id);
