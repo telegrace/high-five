@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
 		userList.splice(userList.indexOf(socket.id), 1);
 
 		console.log("disconnected", socket.id);
-		io.emit("user-disconnected", { id: socket.id, userCount, userList });
+		io.emit("user-disconnected", { id: socket.id, userCount });
 	});
 });
 
